@@ -1,1 +1,1 @@
-scala -classpath htmlparser-1.4.jar scraper.scala
+scala -classpath .\lib\*.jar .\scraper\scraper.scala
