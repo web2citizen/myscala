@@ -1,0 +1,14 @@
+<usstock>
+  <db>
+    <jdbc></jdbc>
+    <host></host>
+    <user></user>
+    <passwd></passwd>
+    <dbname></dbname>
+  </db>
+  <universe>
+    <stock>%5EDJI</stock>
+    <stock>AAPL</stock>
+  </universe>
+  <days>75</days>
+</usstock>

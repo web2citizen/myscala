@@ -1,1 +1,1 @@
-scala -classpath .\lib\*.jar .\scraper\scraper.scala
+scala -deprecation -classpath .\lib\*.jar .\scraper\scraper.scala
