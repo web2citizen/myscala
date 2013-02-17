@@ -11,7 +11,7 @@ import scala.xml.parsing.NoBindingFactoryAdapter
 import nu.validator.htmlparser.sax.HtmlParser
 import nu.validator.htmlparser.common.XmlViolationPolicy
 import org.xml.sax.InputSource
-import java.sql.{DriverManager, Connection, Statement, ResultSet,SQLException}
+import java.sql.DriverManager
 
 // htmlをパースしてxmlノードとして返す
 def toNode(str: String): Node = {
@@ -32,28 +32,32 @@ def diffDays(date1: Date, date2: Date) : Int = {
 }
 
 // yahooファイナンスのページからデータを取得
-def getStockData(stock: String, position: Int) = {
+def getStockData(stock: String, position: Int) : String = {
   println("http://finance.yahoo.com/q/hp?s="+stock+"+Historical+Prices&z="+position+66+"&y="+position)
   val body = Source.fromURL("http://finance.yahoo.com/q/hp?s="+stock+"+Historical+Prices&z="+position+66+"&y="+position).mkString
   val node = toNode(body)
   val table = node \\ "table" filter (_ \ "@class" contains Text("yfnc_datamodoutline1"))
   val row = table \ "tbody" \ "tr" \ "td" \ "table" \ "tbody" \ "tr"
+  
+  var sql = "INSERT INTO uskabu(code, date, open, high, low, close, volume, adj_close) VALUES "
   row.foreach({r =>
     val td = r \ "td" filter (_ \ "@class" contains Text("yfnc_tabledata1"))
-    
     if (td.size == 7){
+	  sql +="('" + stock + "',"
       td.foreach({d => 
 	    if (d == td(0)) {
 		  val date = new SimpleDateFormat("MMM d,yyyy", Locale.US).parse(d.text)
-		  print("%tY-%<tm-%<td".format(date)+" ")
+		  sql += "'" + "%tY-%<tm-%<td".format(date)+ "',"
 		} else {
-	      print(d.text.replace(",", "")+" ")
+	      sql += d.text.replace(",", "")+","
 		}
       })
-      println("")
+	  sql = sql.substring(0, sql.length()-1)
+      sql += "),"
     }
   })
-  Thread.sleep(1000)  
+  sql = sql.substring(0, sql.length()-1)
+  return sql
 }
 
 // メインここから
@@ -76,18 +80,28 @@ try {
                   "?user="+user.text+"&password="+passwd.text;
   println(conString)
   var con = DriverManager.getConnection(conString);
+  
+  val limitDay = diffDays(new Date, date2)
+  println("過去"+limitDay+"日分のデータを取得します。")
 
+  // 銘柄毎に指定日からのデータを取得
+  stocks.foreach({stock =>
+    for (i <- 0 to limitDay) {
+      // ページ先頭の日になったら取得
+      if (i % pageNum == 0 ) {
+        val sql = getStockData(stock.text, i)
+		println(sql)
+        var stmt = con.createStatement();
+        stmt.executeUpdate(sql)
+        stmt.close()
+	    Thread.sleep(1000)
+      }
+	}
+  })
+  con.close();
 } catch {
   case e => e.printStackTrace()
 }
 
-val limitDay = diffDays(new Date, date2)
-println("過去"+limitDay+"日分のデータを取得します。")
 
-// 銘柄毎に指定日からのデータを取得
-stocks.foreach({stock =>
-  for (i <- 0 to limitDay)
-    // ページ先頭の日になったら取得
-    if (i % pageNum == 0 ) getStockData(stock.text, i)
-})
 

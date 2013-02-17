@@ -1,1 +1,1 @@
-scala -deprecation -classpath .\lib\*.jar .\scraper\scraper.scala
+scala -deprecation -classpath .\lib\htmlparser-1.4.jar;.\lib\mysql-connector-java-5.1.17-bin.jar .\scraper\scraper.scala
