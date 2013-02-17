@@ -1,14 +1,14 @@
 <usstock>
   <db>
-    <jdbc></jdbc>
-    <host></host>
-    <user></user>
-    <passwd></passwd>
-    <dbname></dbname>
+    <jdbc>com.mysql.jdbc.Driver</jdbc>
+    <host>localhost</host>
+    <user>test</user>
+    <passwd>test</passwd>
+    <dbname>test</dbname>
   </db>
   <universe>
     <stock>%5EDJI</stock>
     <stock>AAPL</stock>
   </universe>
-  <days>75</days>
+  <startday>2013-01-01</startday>
 </usstock>
