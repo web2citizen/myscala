@@ -33,8 +33,8 @@ def diffDays(date1: Date, date2: Date) : Int = {
 
 // yahooファイナンスのページからデータを取得
 def getStockData(stock: String, position: Int) : String = {
-  println("http://finance.yahoo.com/q/hp?s="+stock+"+Historical+Prices&z="+position+66+"&y="+position)
-  val body = Source.fromURL("http://finance.yahoo.com/q/hp?s="+stock+"+Historical+Prices&z="+position+66+"&y="+position).mkString
+  println("http://finance.yahoo.com/q/hp?s="+stock+"+Historical+Prices&z="+(position+66)+"&y="+position)
+  val body = Source.fromURL("http://finance.yahoo.com/q/hp?s="+stock+"+Historical+Prices&z="+(position+66)+"&y="+position).mkString
   val node = toNode(body)
   val table = node \\ "table" filter (_ \ "@class" contains Text("yfnc_datamodoutline1"))
   val row = table \ "tbody" \ "tr" \ "td" \ "table" \ "tbody" \ "tr"
@@ -65,7 +65,7 @@ val pageNum = 66 // yahooファイナンスの1ページあたりの日数
 val config = XML.loadFile(new File("scraper/config.xml"))
 val stocks = config \ "universe" \ "stock"
 val startday = config \ "startday" head
-val date2 = new SimpleDateFormat("yyyy-MM-dd").parse(startday.text)
+val startDate = new SimpleDateFormat("yyyy-MM-dd").parse(startday.text)
 
 // DB接続設定
 val jdbc = config \ "db" \ "jdbc" head
@@ -81,14 +81,13 @@ try {
   println(conString)
   var con = DriverManager.getConnection(conString);
   
-  val limitDay = diffDays(new Date, date2)
+  val limitDay = diffDays(new Date, startDate)
   println("過去"+limitDay+"日分のデータを取得します。")
 
   // 事前データを削除
   val sql = "DELETE FROM stock_daily;"
   var stmt = con.createStatement();
   stmt.executeUpdate(sql)
-  stmt.close()
   // 銘柄毎に指定日からのデータを取得
   stocks.foreach({stock =>
     for (i <- 0 to limitDay) {
@@ -96,16 +95,13 @@ try {
       if (i % pageNum == 0 ) {
         val sql2 = getStockData(stock.text, i)
 		//println(sql)
-        stmt = con.createStatement();
         stmt.executeUpdate(sql2)
-        stmt.close()
 	    Thread.sleep(1000)
       }
 	}
   })
   // 修正株価を適用
   val sql3 = "update stock_daily set adj_open=(truncate(open * adj_close /close + 0.005, 2)), adj_high=(truncate(high * adj_close /close + 0.005, 2)), adj_low=(truncate(low * adj_close /close + 0.005, 2));"
-  stmt = con.createStatement();
   stmt.executeUpdate(sql3)
   stmt.close()
   con.close();
