@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS `test`.`uskabu`;
-CREATE TABLE  `test`.`uskabu` (
+DROP TABLE IF EXISTS `us`.`stock_daily`;
+CREATE TABLE  `us`.`stock_daily` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(45) DEFAULT NULL,
   `date` datetime DEFAULT NULL,
@@ -8,6 +8,9 @@ CREATE TABLE  `test`.`uskabu` (
   `low` double DEFAULT NULL,
   `close` double DEFAULT NULL,
   `volume` int(10) unsigned DEFAULT NULL,
+  `adj_open` double DEFAULT NULL,
+  `adj_high` double DEFAULT NULL,
+  `adj_low` double DEFAULT NULL,
   `adj_close` double DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=133 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;

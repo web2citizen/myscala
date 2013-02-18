@@ -39,7 +39,7 @@ def getStockData(stock: String, position: Int) : String = {
   val table = node \\ "table" filter (_ \ "@class" contains Text("yfnc_datamodoutline1"))
   val row = table \ "tbody" \ "tr" \ "td" \ "table" \ "tbody" \ "tr"
   
-  var sql = "INSERT INTO uskabu(code, date, open, high, low, close, volume, adj_close) VALUES "
+  var sql = "INSERT INTO stock_daily(code, date, open, high, low, close, volume, adj_close) VALUES "
   row.foreach({r =>
     val td = r \ "td" filter (_ \ "@class" contains Text("yfnc_tabledata1"))
     if (td.size == 7){
@@ -84,20 +84,30 @@ try {
   val limitDay = diffDays(new Date, date2)
   println("過去"+limitDay+"日分のデータを取得します。")
 
+  // 事前データを削除
+  val sql = "DELETE FROM stock_daily;"
+  var stmt = con.createStatement();
+  stmt.executeUpdate(sql)
+  stmt.close()
   // 銘柄毎に指定日からのデータを取得
   stocks.foreach({stock =>
     for (i <- 0 to limitDay) {
       // ページ先頭の日になったら取得
       if (i % pageNum == 0 ) {
-        val sql = getStockData(stock.text, i)
-		println(sql)
-        var stmt = con.createStatement();
-        stmt.executeUpdate(sql)
+        val sql2 = getStockData(stock.text, i)
+		//println(sql)
+        stmt = con.createStatement();
+        stmt.executeUpdate(sql2)
         stmt.close()
 	    Thread.sleep(1000)
       }
 	}
   })
+  // 修正株価を適用
+  val sql3 = "update stock_daily set adj_open=(truncate(open * adj_close /close + 0.005, 2)), adj_high=(truncate(high * adj_close /close + 0.005, 2)), adj_low=(truncate(low * adj_close /close + 0.005, 2));"
+  stmt = con.createStatement();
+  stmt.executeUpdate(sql3)
+  stmt.close()
   con.close();
 } catch {
   case e => e.printStackTrace()
