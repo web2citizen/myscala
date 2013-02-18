@@ -8,7 +8,43 @@
   </db>
   <universe>
     <stock>%5EDJI</stock>
+    <stock>AA</stock>
+    <stock>AXP</stock>
+    <stock>BA</stock>
+    <stock>BAC</stock>
+    <stock>CAT</stock>
+    <stock>CSCO</stock>
+    <stock>CVX</stock>
+    <stock>DD</stock>
+    <stock>DIS</stock>
+    <stock>GE</stock>
+    <stock>HD</stock>
+    <stock>HPQ</stock>
+    <stock>IBM</stock>
+    <stock>INTC</stock>
+    <stock>JNJ</stock>
+    <stock>JPM</stock>
+    <stock>MDLZ</stock>
+    <stock>KO</stock>
+    <stock>MCD</stock>
+    <stock>MMM</stock>
+    <stock>MRK</stock>
+    <stock>MSFT</stock>
+    <stock>PFE</stock>
+    <stock>PG</stock>
+    <stock>T</stock>
+    <stock>TRV</stock>
+    <stock>UTX</stock>
+    <stock>VZ</stock>
+    <stock>WMT</stock>
+    <stock>XOM</stock>
     <stock>AAPL</stock>
+    <stock>ORCL</stock>
+    <stock>GOOG</stock>
+    <stock>QCOM</stock>
+    <stock>AMZN</stock>
+    <stock>AMGN</stock>
+    <stock>CMCSA</stock>
   </universe>
-  <startday>2013-01-01</startday>
+  <startday>2012-11-01</startday>
 </usstock>
