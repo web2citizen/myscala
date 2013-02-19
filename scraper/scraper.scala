@@ -39,7 +39,7 @@ def getStockData(stock: String, position: Int) : String = {
   val table = node \\ "table" filter (_ \ "@class" contains Text("yfnc_datamodoutline1"))
   val row = table \ "tbody" \ "tr" \ "td" \ "table" \ "tbody" \ "tr"
   
-  var sql = "INSERT INTO stock_daily(code, date, open, high, low, close, volume, adj_close) VALUES "
+  var sql = "INSERT INTO stock_daily(ticker, date, open, high, low, close, volume, adj_close) VALUES "
   row.foreach({r =>
     val td = r \ "td" filter (_ \ "@class" contains Text("yfnc_tabledata1"))
     if (td.size == 7){

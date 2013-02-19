@@ -4,10 +4,10 @@
     <host>localhost</host>
     <user>test</user>
     <passwd>test</passwd>
-    <dbname>test</dbname>
+    <dbname>us</dbname>
   </db>
   <universe>
-    <stock>%5EDJI</stock>
+    <stock>^DJI</stock>
     <stock>AA</stock>
     <stock>AXP</stock>
     <stock>BA</stock>
